@@ -1,0 +1,574 @@
+{% extends "discografica/index.html" %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-4">
+            <div class="list-group form-pasos"></div>
+        </div>
+
+        <div class="col-md-8">
+            <form role="form" method="POST" class="panel-form" enctype="multipart/form-data"
+                  action="{% url 'form_action' %}">
+                {% csrf_token %}
+                <input type="hidden" name="is_artista" value="0">
+                <input type="hidden" name="is_album" value="0">
+                <input type="hidden" name="is_cancion" value="0">
+
+                <h3 class="step-form-title upper"></h3>
+
+                <div class="step-form" data-step="1">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <span class="fa fa-microphone cancion-box-icon"></span>
+                            </span>
+
+                            <div style="position:relative;">
+                                <input class="form-control input-lg form-check" data-autocomplete="artista" type="text"
+                                       name="artista_nombre"
+                                       placeholder="Nombre del artista" data-toggle="dropdown"
+                                       style="font-weight: 300;"/>
+                            </div>
+                            <div class="form-autocomplete hide" data-autocomplete="artista">
+                                <ul>
+                                </ul>
+                            </div>
+                            <span class="input-group-btn">
+                                <button class="btn btn-info btn-lg btn-autocomplete" style="outline: none;"
+                                        type="button" data-autocomplete="artista">
+                                    <span class="glyphicon glyphicon-search"></span>
+                                </button>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="padding: 15px 0;">
+                        <div class="btn-group">
+                            <button class="btn btn-primary btn-step btn-step-next upper" data-step="1">Siguiente <span
+                                    class="glyphicon glyphicon-chevron-right"></span></button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step-form hide" data-step="2">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <span class="glyphicon glyphicon-cd cancion-box-icon"></span>
+                            </span>
+                            <input class="form-control input-lg form-check" data-autocomplete="album" type="text"
+                                   name="album_titulo"
+                                   placeholder="Título del álbum"
+                                   style="font-weight: 300;"/>
+                            <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-plus cancion-box-icon"></span>
+                            </span>
+                        </div>
+                    </div>
+
+
+                    <div class="row form-group-album hide">
+                        <div class="col-md-4" style="margin-bottom: 15px;">
+                            <div class="form-group">
+                                <input class="form-control form-check" type="text" name="album_fecha"
+                                       placeholder="Año de lanzamiento" style="font-weight: 300;">
+                            </div>
+                        </div>
+
+                        <div class="col-md-8">
+                            <div class="form-group">
+                                <div class="input-group">
+                                <span class="input-group-btn">
+                                    <div class="form-album-fakebtn btn btn-info">
+                                        Subir imagen
+                                        <input type="file" class="form-album-upload" name="imagen"/>
+                                    </div>
+                                </span>
+                                    <input class="form-album-upload-text form-control" type="text" value="" disabled/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-album-content">
+
+                        </div>
+                    </div>
+
+                    <div class="btn-group">
+                        <button class="btn btn-primary btn-step btn-step-back upper" data-step="2"><span
+                                class="glyphicon glyphicon-chevron-left"></span> Atrás
+                        </button>
+                        <button class="btn btn-primary btn-step btn-step-next upper" data-step="2">Siguiente <span
+                                class="glyphicon glyphicon-chevron-right"></span></button>
+                    </div>
+                </div>
+
+
+                <div class="step-form hide" data-step="3">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <span class="glyphicon glyphicon-headphones cancion-box-icon"></span>
+                            </span>
+
+                            <div style="position:relative;">
+                                <input class="form-control input-lg form-check" data-autocomplete="cancion" type="text"
+                                       name="cancion_titulo"
+                                       placeholder="Título de la canción" data-toggle="dropdown"
+                                       style="font-weight: 300;"/>
+                            </div>
+                            <div class="form-autocomplete hide" data-autocomplete="cancion">
+                                <ul>
+                                </ul>
+                            </div>
+                            <span class="input-group-btn">
+                                <button class="btn btn-info btn-lg" style="outline: none;"
+                                        type="button" data-autocomplete="cancion">
+                                    <span class="glyphicon glyphicon-search"></span>
+                                </button>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <textarea class="form-control form-check" name="cancion_letra"
+                                  style="resize:vertical; height: 400px;"></textarea>
+                    </div>
+
+
+                    <div class="form-group" style="padding: 15px 0;">
+                        <div class="btn-group">
+                            <button class="btn btn-primary btn-step btn-step-back upper" data-step="3"><span
+                                    class="glyphicon glyphicon-chevron-left"></span> Atrás
+                            </button>
+                            <button type="submit" class="btn btn-success upper btn-step-finish" data-step="3">
+                                Finalizar
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </form>
+        </div>
+    </div>
+    <script>
+        $(document).ready(function () {
+
+            var delay = (function () {
+                var timer = 0;
+                return function (callback, ms) {
+                    clearTimeout(timer);
+                    timer = setTimeout(callback, ms);
+                };
+            })();
+
+
+            titulo_form(1);
+
+            $(".btn-autocomplete").on("click", function () {
+                clickAutocomplete($(this).attr("data-autocomplete"));
+            });
+
+
+            function autocomplete(elemento, string, url, data) {
+                var response;
+
+                $.ajax({
+                    url: url,
+                    type: 'get',
+                    async: true,
+                    data: "s=" + string,
+                    success: function (datos) {
+                        response = datos;
+                    },
+                    complete: function () {
+                        if (response.ok) {
+                            $("div[data-autocomplete='" + elemento + "'] ul").html(response.content);
+                            $("div[data-autocomplete='" + elemento + "']").removeClass("hide");
+
+                            $("div[data-autocomplete='" + elemento + "'] ul li button.form-autocomplete-item").on("click", function () {
+                                switch (elemento) {
+                                    case "artista":
+                                        $("input[data-autocomplete='" + elemento + "']").val($(this).attr(data.nombre));
+                                        $(".step-form[data-step='1']").find(".form-group").removeClass("has-error").addClass("has-success");
+                                        get_albumes(".form-album-content", $(this).attr(data.id), "{% url 'form_album' %}", "");
+                                        break;
+                                    case "cancion":
+                                        $("input[data-autocomplete='" + elemento + "']").val($(this).attr(data.titulo));
+                                        $("textarea[name='cancion_letra']").val(response.letra).attr("disabled", "");
+                                        $(".step-form[data-step='3']").find(".form-group").removeClass("has-error").addClass("has-success");
+                                        break;
+                                }
+
+                                $("div[data-autocomplete='" + elemento + "']").addClass("hide");
+                                $("div[data-autocomplete='" + elemento + "'] ul").html("");
+
+                                $("input[name='is_" + elemento + "']").val($(this).attr(data.id));
+                                return false;
+                            });
+
+                        } else {
+                            $("div[data-autocomplete='" + elemento + "']").addClass("hide");
+                        }
+                    },
+                    error: function () {
+                    }
+                });
+            }
+
+
+            function clickAutocomplete(elemento) {
+                var input = $("input[data-autocomplete='" + elemento + "']");
+                var div = $("div[data-autocomplete='" + elemento + "']");
+                var anterior = input.val();
+
+                if (input.val().length > 0) {
+                    switch (elemento) {
+                        case "artista":
+                            if (anterior.length > input.val().length) {
+                                resetIsArtista();
+                                resetIsAlbum();
+                            }
+
+                            autocomplete(elemento, input.val(), "{% url 'form_artista' %}", {
+                                nombre: "data-artista-nombre",
+                                id: "data-artista-id"
+                            });
+                            break;
+                        case "cancion":
+                            if (anterior.length > input.val().length) {
+                                resetIsCancion();
+                            }
+
+                            autocomplete(elemento, input.val(), "{% url 'form_cancion' %}", {
+                                titulo: "data-cancion-titulo",
+                                id: "data-cancion-id"
+                            });
+                            break;
+                    }
+                } else {
+                    div.addClass("hide");
+                    switch (elemento) {
+                        case "artista":
+                            if (input.val().length == 0) {
+                                resetIsArtista();
+                                resetIsAlbum();
+                            }
+                            break;
+                        case "cancion":
+                            if (input.val().length == 0) {
+                                resetIsCancion();
+                            }
+                            break;
+                    }
+                }
+            }
+
+
+            allowAutocomplete("artista");
+            allowAutocomplete("album");
+            allowAutocomplete("cancion");
+
+            function allowAutocomplete(elemento) {
+                var input = $("input[data-autocomplete='" + elemento + "']");
+                var div = $("div[data-autocomplete='" + elemento + "']");
+                var anterior = input.val();
+
+                input.bind('focus', function () {
+                    if ($(this).val().length > 0) {
+                        anterior = input.val();
+                        if (div.find("ul").html().length > 0) {
+                            div.removeClass("hide");
+                        }
+                    }
+
+                    $(this).keyup(function () {
+                        if (anterior != input.val()) {
+                            delay(function () {
+                                if (input.val().length > 0) {
+                                    switch (elemento) {
+                                        case "artista":
+                                            if (anterior.length > input.val().length) {
+                                                resetIsArtista();
+                                                resetIsAlbum();
+                                            }
+
+                                            autocomplete(elemento, input.val(), "{% url 'form_artista' %}", {
+                                                nombre: "data-artista-nombre",
+                                                id: "data-artista-id"
+                                            });
+                                            break;
+                                        case "album":
+                                            if (anterior.length > input.val().length) {
+                                                $(".step-form[data-step='2']").find(".form-group").removeClass("has-error").removeClass("has-success");
+                                            }
+                                            break;
+                                        case "cancion":
+                                            if (anterior.length > input.val().length) {
+                                                resetIsCancion();
+                                            }
+
+                                            autocomplete(elemento, input.val(), "{% url 'form_cancion' %}", {
+                                                titulo: "data-cancion-titulo",
+                                                id: "data-cancion-id"
+                                            });
+                                            break;
+                                    }
+                                } else {
+                                    div.addClass("hide");
+                                    switch (elemento) {
+                                        case "artista":
+                                            if (input.val().length == 0) {
+                                                resetIsArtista();
+                                                resetIsAlbum();
+                                            }
+                                            break;
+                                        case "album":
+                                            if (input.val().length == 0) {
+                                                $(".step-form[data-step='2']").find(".form-group").removeClass("has-error").removeClass("has-success");
+                                            }
+                                            break;
+                                        case "cancion":
+                                            if (input.val().length == 0) {
+                                                resetIsCancion();
+                                            }
+                                            break;
+                                    }
+                                }
+                            }, 250);
+                        }
+                    });
+
+                });
+            }
+
+
+            menu_pasos($(".step-form").length);
+
+            function menu_pasos(pasos) {
+                var p = {};
+
+                for (i = 0; i < pasos; i++) {
+                    p[i] = "paso " + (i + 1);
+                    $(".form-pasos").append("<div class='list-group-item upper'>" + p[i] + " <span class='glyphicon glyphicon-chevron-right pull-right'></span></div>")
+                }
+
+                $(".form-pasos div:first-child").addClass("active");
+            }
+
+            $(".btn-step-finish").on("click", function (event) {
+                if (siguiente($(this).attr("data-step"))) {
+                    var ok;
+
+                    form_check($("input[name='is_album']").val(), $("input[name='is_cancion']").val()).done(function (data) {
+                        if (!data.ok) {
+                            $("#form-alert").modal();
+                        }
+
+                        ok = data.ok;
+                    });
+
+                    return ok;
+                }
+
+                event.preventDefault();
+            });
+
+
+            $(".btn-step-next").on("click", function () {
+                siguiente($(this).attr("data-step"));
+                return false;
+            });
+
+            $(".btn-step-back").on("click", function () {
+                anterior($(this).attr("data-step"));
+                return false;
+            });
+
+
+            function titulo_form(step) {
+                var titulo;
+                switch (step) {
+                    case 1:
+                        titulo = "Artista";
+                        break;
+                    case 2:
+                        titulo = "Álbum";
+                        break;
+                    case 3:
+                        titulo = "Canción";
+                        break;
+                }
+
+                return $(".step-form-title").html(titulo + "<div class='step-form-subtitle upper'>Elige " + titulo + ", o inserta</div>");
+            }
+
+
+            function siguiente(step) {
+                var pasos_total = $(".step-form").length;
+                var paso = $(".step-form[data-step='" + step + "']");
+                var form_check_total = paso.find(".form-check").length;
+                var cont = 0
+
+                paso.find(".form-check").each(function () {
+                    var valor = $(this).val().length;
+
+                    if (valor == 0) {
+                        $(this).parents(".form-group").first().removeClass("has-success").addClass("has-error");
+                    } else if (valor > 0) {
+                        $(this).parents(".form-group").first().removeClass("has-error").addClass("has-success");
+                        cont++;
+                    }
+
+                });
+
+                if (cont == form_check_total) {
+                    if (step == pasos_total) {
+                        return true;
+                    } else if (step < pasos_total) {
+                        paso.addClass("hide");
+                        $(".form-pasos div:nth-child(" + step + ")").removeClass("active");
+
+                        step++;
+                        $(".step-form[data-step='" + step + "']").removeClass("hide");
+
+                        titulo_form(step);
+                        $(".form-pasos div:nth-child(" + step + ")").addClass("active");
+                    }
+                }
+
+                return false;
+            }
+
+            function anterior(step) {
+                var paso = $(".step-form[data-step='" + step + "']");
+                paso.addClass("hide");
+                $(".form-pasos div:nth-child(" + step + ")").removeClass("active");
+
+                if (step > 1) {
+                    step--;
+                    $(".step-form[data-step='" + step + "']").removeClass("hide");
+                }
+
+                titulo_form(step);
+                $(".form-pasos div:nth-child(" + step + ")").addClass("active");
+            }
+
+
+            function get_albumes(elemento, id, url, data) {
+                var response;
+
+                $.ajax({
+                    url: url,
+                    type: 'get',
+                    async: true,
+                    data: "id=" + id,
+                    success: function (datos) {
+                        response = datos;
+                    },
+                    complete: function () {
+                        if (response.ok) {
+                            $(elemento).html(response.content);
+
+                            $(".form-album-box").on("click", function () {
+                                resetIsAlbum();
+                                $(".form-group-album").addClass("hide").find("input").val("");
+                                $(this).addClass("active");
+                                alid = $(this).attr("data-album-id");
+                                titulo = $(this).attr("data-album-titulo");
+                                $("input[name='is_album']").val(alid);
+                                $("input[name='album_titulo']").val(titulo);
+                                $("input[name='album_fecha']").val("null");
+                                $(".step-form[data-step='2']").find(".form-group").removeClass("has-error").addClass("has-success");
+                            });
+                        } else {
+
+                        }
+                    },
+                    error: function () {
+                    }
+                });
+            }
+
+            $(".form-album-upload").on("change", function () {
+                $(".form-album-upload-text").val($(this).val());
+            });
+
+            function resetIsArtista() {
+                $("input[name='is_artista']").val("0");
+                $(".step-form[data-step='1']").find(".form-group").removeClass("has-success").removeClass("has-error");
+                $(".form-album-content").html("");
+            }
+
+            function resetIsAlbum() {
+                $(".form-album-box").removeClass("active");
+                $("input[name='is_album']").val("0");
+                $("input[name='album_titulo']").val("");
+                $("input[name='album_fecha']").val("");
+                $("input[name='imagen']").val("");
+                $(".step-form[data-step='2']").find(".form-group").removeClass("has-success").removeClass("has-error");
+            }
+
+
+            $("input[name='album_titulo']").on("click", function () {
+                resetIsAlbum();
+                $(".form-group-album").removeClass("hide");
+            });
+
+
+            function resetIsCancion() {
+                $("input[name='is_cancion']").val("0");
+                $("textarea[name='cancion_letra']").val("").removeAttr("disabled");
+                $(".step-form[data-step='3']").find(".form-group").removeClass("has-success").removeClass("has-error");
+            }
+
+
+            function form_check(alid, cid) {
+                var response;
+
+                return $.ajax({
+                    url: "{% url "form_check" %}",
+                    type: 'get',
+                    async: false,
+                    data: "alid=" + alid + "&cid=" + cid,
+                    success: function (datos) {
+                        response = datos;
+                    },
+                    complete: function () {
+                        {#                        return response.ok;#}
+                        console.log(response);
+                    },
+                    error: function () {
+                        alert("error");
+                    }
+                });
+            }
+
+        });
+
+    </script>
+
+
+    <div id="form-alert" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Modal Header</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Esta publicación ya existe</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Aceptar</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+{% endblock %}

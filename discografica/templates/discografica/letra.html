@@ -1,0 +1,140 @@
+{% extends "discografica/index.html" %}
+
+{% block content %}
+    <div class="row" style="padding-top: 1em;">
+        <div class="col-md-8">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="container-fluid letra-info-header">
+                        <div class="col-md-4" style="padding: 0;">
+                            <img style="width: 100%; border: 0; cursor: pointer; border-radius: 5px; z-index: -1000;"
+                                 src="{% url 'home' %}{{ publicacion.album.imagen }}"
+                                 alt="{{ publicacion.album.titulo }}"
+                                 title="{{ publicacion.album.titulo }}"/>
+                        </div>
+                        <div class="col-md-8" style="padding: 15px 10px;">
+                            <div class="cancion-box-c">
+                                <span class="glyphicon glyphicon-headphones cancion-box-icon"></span>
+                                <span>{{ publicacion.cancion.titulo }}</span>
+                            </div>
+                            <div class="cancion-box-al">
+                                <span class="glyphicon glyphicon-cd cancion-box-icon"></span>
+                                <span>{{ publicacion.album.titulo }}</span>
+                                <span style="margin: 0 0 0 10px; font-size: 1.25rem; font-weight: 300; color: #76B2D0;">{{ publicacion.album.fecha }}</span>
+                            </div>
+                            <div class="cancion-box-a">
+                                <span class="fa fa-microphone cancion-box-icon"></span>
+                                <span>{{ publicacion.album.artista.nombre }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="row-fluid">
+                        <div class="cancion-box-letra">
+                            {{ publicacion.cancion.letra|linebreaks }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="row-fluid">
+                <h3 class="ml-titulo">
+                    <div>MÁS TEMAS DE</div>
+                    <span>{{ publicacion.album.titulo }}</span>
+                </h3>
+                {% if canciones.count > 1 %}
+                    <div class="album-box-canciones">
+                        {% for publicacion in canciones %}
+                            {% if cid != publicacion.cancion.id %}
+                                <a class="album-box-canciones-item" href="{% url "letra" id=publicacion.id %}">
+                                    {{ publicacion.cancion.titulo }}
+                                </a>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="upper ml-noresult">
+                        No hay resultados
+                    </div>
+                {% endif %}
+            </div>
+
+
+            <div class="row-fluid">
+                <h3 class="ml-titulo">
+                    <div>MÁS TRABAJOS DE</div>
+                    <span>{{ publicacion.album.artista.nombre }}</span>
+                </h3>
+                {% if albumes.count > 1 %}
+                    {% for album in albumes %}
+                        {% if alid != album.id %}
+                            <button class="btn album-box album-box-load" data-id="{{ album.id }}"
+                                    style="padding: 0; outline: none; cursor: pointer;">
+                                <div class="container-fluid top5-item" style="padding: 0;">
+                                    <div class="col-md-3" style="padding: 0;">
+                                        <img class="album-box-img" src="{% url 'home' %}{{ album.imagen }}"/>
+                                    </div>
+                                    <div class="col-md-9" style="padding: 0.75em;">
+                                        <div class="album-box-titulo" style=" cursor: pointer; font-weight: 300;">
+                                            {{ album.titulo }}
+                                        </div>
+
+                                        <div style="font-size: 0.85em; cursor: pointer; margin: 0 0 0.5em 0; font-weight: 300;">
+                                            {{ album.fecha }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </button>
+                            <div class="album-box-canciones fade"></div>
+                        {% endif %}
+                    {% endfor %}
+                {% else %}
+                    <div class="upper ml-noresult">
+                        No hay resultados
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+    </div>
+
+
+    <script>
+        function loadAlbum(id) {
+            var response;
+
+            $.ajax({
+                url: "{% url 'home' %}album/" + id + "/",
+                type: 'get',
+                async: true,
+                data: "",
+                success: function (datos) {
+                    response = datos;
+                },
+                complete: function () {
+                    if (response.ok) {
+                        $(".album-box[data-id='" + id + "']").next().html(response.content).addClass("in");
+                    } else {
+                        $(".album-box[data-id='" + id + "']").next().html('<div class="upper ml-noresult">No hay resultados</div>').addClass("in");
+                    }
+                },
+                error: function () {
+                }
+            });
+        }
+
+
+        $(".album-box-load").one("click", function () {
+            loadAlbum($(this).attr("data-id"));
+            return false;
+        });
+
+    </script>
+
+{% endblock content %}

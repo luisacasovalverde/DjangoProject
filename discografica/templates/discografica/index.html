@@ -1,0 +1,77 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html class="no-js" lang="es-ES">
+<head>
+    <meta charset="utf-8">
+    <title>Discográfica</title>
+    <meta name="description" content="Web desarrollada con Django Framework para PSP">
+    <meta name="author" content="Luis Acaso Valverde">
+
+    <!--        <script src="js/init.js"></script>
+            <script src="js/jquery-1.6.1.min.js"></script>-->
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <link href="{% static 'css/font-awesome.min.css' %}" media="screen" rel="stylesheet" type="text/css">
+    <link href="{% static 'css/bootstrap.min.css' %}" media="screen" rel="stylesheet" type="text/css">
+    <link href="{% static 'css/bootstrap-theme.min.css' %}" media="screen" rel="stylesheet" type="text/css">
+    <link href="{% static 'css/style.css' %}" media="screen" rel="stylesheet" type="text/css">
+    <!--<link href="/public/img/favicon.ico" rel="shortcut icon" type="image/vnd.microsoft.icon">-->
+    <!--[if lt IE 9]><script type="text/javascript" src="js/html5shiv.min.js"></script><![endif]-->
+    <!--[if lt IE 9]><script type="text/javascript" src="js/respond.min.js"></script><![endif]-->
+    <script type="text/javascript" src="{% static 'js/jquery.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/actions.js' %}"></script>
+</head>
+<body data-spy="scroll" data-target=".navbar" data-offset="50">
+<nav class="navbar navbar-fixed-top header" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar bg-color-base"></span>
+                <span class="icon-bar bg-color-base"></span>
+                <span class="icon-bar bg-color-base"></span>
+            </button>
+            <div class="navbar-brand" style="padding-left: 10px;">
+                Discográfica
+            </div>
+        </div>
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="{% url 'home' %}"><span class="glyphicon glyphicon-home" style="margin: 0; font-size: 0.85em;"></span> Inicio</a>
+                </li>
+                <li>
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'panel' %}"><span class="glyphicon glyphicon-wrench" style="margin: 0; font-size: 0.85em;"></span>
+                            Panel</a>
+                    {% endif %}
+                </li>
+                <li>
+                    <a href="{% url 'login' %}">
+                        {% if user.is_authenticated %}
+                            <span class="glyphicon glyphicon-log-out" style="margin: 0; font-size: 0.85em;"></span> Logout
+                        {% else %}
+                            <span class="glyphicon glyphicon-log-in" style="margin: 0; font-size: 0.85em;"></span> Login
+                        {% endif %}
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="container" style="padding-top: 100px; background: white;">
+    {% block content %}{% endblock content %}
+</div>
+<footer class="container" style="background: #f9f9f9; min-height: 150px; border-top: 1px solid rgba(0, 0, 0, 0.15);">
+    {% block footer %}{% endblock footer %}
+    <div class="row">
+        <div class="col-md-12">
+            <span style="font-size: 0.95em; padding: 5em 1em; display: inline-block;">Discográfica © 2016 - Luis Acaso Valverde (PSP)</span>
+        </div>
+    </div>
+</footer>
+</body>
+</html>
